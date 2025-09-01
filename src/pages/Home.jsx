@@ -7,6 +7,7 @@ const Home = () => {
   const [schools, setSchools] = useState([]);
   const featuredRef = useRef(null);
   const API = import.meta.env.VITE_API_URL;
+console.log("API URL:", API); 
 
   const handleScroll = () => {
     featuredRef.current?.scrollIntoView({ behavior: "smooth" });
