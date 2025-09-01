@@ -50,6 +50,10 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
+app.get("/", (req, res) => {
+  res.send("Hello from backend");
+});
+
 // API route for adding schools with image upload
 app.post("/add-schools", upload.single("image"), (req, res) => {
   try {
