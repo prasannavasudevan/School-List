@@ -6,6 +6,7 @@ import axios from "axios";
 const Home = () => {
   const [schools, setSchools] = useState([]);
   const featuredRef = useRef(null);
+  const API = import.meta.env.VITE_API_URL;
 
   const handleScroll = () => {
     featuredRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -13,7 +14,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/schools")
+      .get(`${API}/schools`)
       .then((res) => {
         if (res.data.success) setSchools(res.data.data);
       })

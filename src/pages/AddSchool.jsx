@@ -10,6 +10,7 @@ export default function AddSchool() {
     formState: { errors },
   } = useForm();
   const [message, setMessage] = useState("");
+  const API = import.meta.env.VITE_API_URL;
 
   const onSubmit = async (data) => {
     try {
@@ -25,7 +26,7 @@ export default function AddSchool() {
         formData.append("image", data.image[0]);
       }
 
-      await axios.post("http://localhost:5000/add-schools", formData, {
+      await axios.post(`${API}/add-schools`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
