@@ -1,0 +1,19 @@
+{
+  "name": "school-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "mysql2": "^3.14.3",
+    "dotenv": "^17.2.1",
+    "cors": "^2.8.5",
+    "body-parser": "^2.2.0",
+    "multer": "^2.0.2",
+    "cloudinary": "^1.41.3",
+    "multer-storage-cloudinary": "^4.0.0"
+  }
+}
