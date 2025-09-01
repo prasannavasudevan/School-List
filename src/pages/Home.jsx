@@ -19,7 +19,7 @@ const Home = () => {
         if (res.data.success) setSchools(res.data.data);
       })
       .catch((err) => console.error("Error fetching schools:", err));
-  }, []);
+  }, [API]);
 
   return (
     <div className="relative">
