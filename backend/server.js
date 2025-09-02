@@ -13,9 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(cors({
-  origin: "https://school-list-five.vercel.app", 
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+   origin: "*"
 }));
 
 // Middleware
