@@ -54,6 +54,17 @@ app.get("/", (req, res) => {
   res.send("Hello from backend");
 });
 
+app.get("/test-db", (req, res) => {
+  db.query("SELECT 1 + 1 AS result", (err, results) => {
+    if (err) {
+      console.error("DB test failed:", err);
+      return res.status(500).json({ success: false, message: err.message });
+    }
+    res.json({ success: true, result: results[0].result });
+  });
+});
+
+
 // API route for adding schools with image upload
 app.post("/add-schools", upload.single("image"), (req, res) => {
   try {
