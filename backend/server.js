@@ -16,20 +16,22 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// MySQL connection
+// MySQL pool connection
 const db = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "campus_connect",
+  port: process.env.DB_PORT || 3306,
 });
 
-db.connect((err) => {
+// Test connection
+db.query("SELECT 1", (err) => {
   if (err) {
     console.error("Database connection failed:", err);
-    return;
+  } else {
+    console.log("Connected to MySQL Database via pool");
   }
-  console.log("Connected to MySQL Database");
 });
 
 // Cloudinary configuration
@@ -50,11 +52,9 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
-app.get("/", (req, res) => {
-  res.send("Hello from backend");
-});
+// Routes
+app.get("/", (req, res) => res.send("Hello from backend"));
 
-// API route for adding schools with image upload
 app.post("/add-schools", upload.single("image"), (req, res) => {
   try {
     const { school_name, address, city, state, contact_number, email } =
@@ -84,7 +84,9 @@ app.post("/add-schools", upload.single("image"), (req, res) => {
       (err, result) => {
         if (err) {
           console.error("Error inserting data:", err);
-          return res.status(500).json({ success: false, message: err.message });
+          return res
+            .status(500)
+            .json({ success: false, message: err.message });
         }
         res.json({
           success: true,
@@ -101,8 +103,7 @@ app.post("/add-schools", upload.single("image"), (req, res) => {
 });
 
 app.get("/schools", (req, res) => {
-  const query = "SELECT * FROM schools";
-  db.query(query, (err, results) => {
+  db.query("SELECT * FROM schools", (err, results) => {
     if (err) {
       return res.status(500).json({ success: false, message: err.message });
     }
