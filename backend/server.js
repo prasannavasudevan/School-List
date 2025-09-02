@@ -12,16 +12,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-app.use(cors({
-   origin: "*"
-}));
-
 // Middleware
-app.use(cors());
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 // MySQL connection
-
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -30,6 +25,15 @@ const db = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+});
+
+// Test DB connection once at startup
+db.query("SELECT 1", (err) => {
+  if (err) {
+    console.error("Database connection failed:", err.message);
+  } else {
+    console.log("Database connected successfully");
+  }
 });
 
 // Cloudinary configuration
@@ -51,9 +55,10 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage });
 
 app.get("/", (req, res) => {
-  res.send("Hello from backend");
+  res.json({ success: true, message: "Backend is running" });
 });
 
+// DB test route
 app.get("/test-db", (req, res) => {
   db.query("SELECT 1 + 1 AS result", (err, results) => {
     if (err) {
@@ -64,26 +69,14 @@ app.get("/test-db", (req, res) => {
   });
 });
 
-
-// API route for adding schools with image upload
+// API route for adding schools
 app.post("/add-schools", upload.single("image"), (req, res) => {
   try {
-    const { school_name, address, city, state, contact_number, email } =
-      req.body;
+    const { school_name, address, city, state, contact_number, email } = req.body;
     const imageURL = req.file?.path || req.file?.secure_url;
 
-    if (
-      !school_name ||
-      !address ||
-      !city ||
-      !state ||
-      !contact_number ||
-      !email ||
-      !imageURL
-    ) {
-      return res
-        .status(400)
-        .json({ success: false, message: "All fields are required" });
+    if (!school_name || !address || !city || !state || !contact_number || !email || !imageURL) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
     const query =
@@ -111,16 +104,19 @@ app.post("/add-schools", upload.single("image"), (req, res) => {
   }
 });
 
+// Get all schools
 app.get("/schools", (req, res) => {
   const query = "SELECT * FROM schools";
   db.query(query, (err, results) => {
     if (err) {
+      console.error("Error fetching schools:", err);
       return res.status(500).json({ success: false, message: err.message });
     }
     res.json({ success: true, data: results });
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+// Start server
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running at http://0.0.0.0:${PORT}`);
 });
