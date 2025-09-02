@@ -10,7 +10,13 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
+
+app.use(cors({
+  origin: "https://school-list-five.vercel.app", 
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
 // Middleware
 app.use(cors());
